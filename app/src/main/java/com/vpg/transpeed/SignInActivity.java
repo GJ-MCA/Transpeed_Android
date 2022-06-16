@@ -150,8 +150,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     //admin side ui
                 } else if (userType.equals("Customer")) {
                     //Customer side ui
-//                    Intent intent = new Intent(SignInActivity.this, );
-//                    startActivity(intent);
                 } else if (userType.equals("Manager")) {
                     //Manager side ui
                 } else if (userType.equals("PickUp/Delivery Person")) {
