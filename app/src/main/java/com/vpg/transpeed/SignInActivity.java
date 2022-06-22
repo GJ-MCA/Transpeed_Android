@@ -26,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.shashank.sony.fancytoastlib.FancyToast;
 import com.vpg.transpeed.ApiManager.JSONField;
 import com.vpg.transpeed.ApiManager.WebURL;
+import com.vpg.transpeed.Customer.CustomerHomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,6 +151,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     //admin side ui
                 } else if (userType.equals("Customer")) {
                     //Customer side ui
+                    Intent intent1 = new Intent(SignInActivity.this, CustomerHomeActivity.class);
+                    startActivity(intent1);
                 } else if (userType.equals("Manager")) {
                     //Manager side ui
                 } else if (userType.equals("PickUp/Delivery Person")) {
@@ -206,5 +209,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         super.onBackPressed();
         finish();
         //System.exit(2);
+    }
+
+    @Override
+    protected void onStop() {
+        finish();
+        super.onStop();
     }
 }

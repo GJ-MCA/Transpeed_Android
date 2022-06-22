@@ -24,7 +24,7 @@
             <solid android:color="@color/white" />
             <corners android:radius="5dp" />
             <stroke android:width="2dp"
-                android:color="@color/light_blue" />
+                android:color="@color/grey" />
             <padding
                 android:left="10dp"
                 android:right="10dp"
@@ -33,6 +33,5 @@
         </shape>
 
     </item>
-
 
 </selector>

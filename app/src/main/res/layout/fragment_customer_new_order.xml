@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    tools:context=".Customer.Fragments.CustomerNewOrderFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:textAlignment="center"
+        android:theme="?attr/actionBarTheme"
+        app:titleTextColor="@color/white" />
+
+    <ScrollView
+        android:id="@+id/svOrderDetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rlFrame"
+        android:layout_below="@+id/toolbar"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_background"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Pick-Up Point Details"
+                android:textColor="@color/light_blue"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/background_new_order_details"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:text="City :"
+                        android:textColor="@color/black"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/spPickUpCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_spinner"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:text="Area : "
+                        android:textColor="@color/black"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/spPickUpArea"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_spinner"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/etPickUpAddresLine1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="10sp"
+                    android:hint="Address Line 1"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <EditText
+                    android:id="@+id/etPickUpAddresLine2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="10sp"
+                    android:hint="Address Line 2"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <EditText
+                    android:id="@+id/etPickUpLandmark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location2"
+                    android:drawablePadding="10sp"
+                    android:hint="Landmark"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:text="Time Slot :"
+                        android:textColor="@color/black"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/spPickUpTimeSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_spinner"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:text="Delivery Point Details"
+                android:textColor="@color/light_blue"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/background_new_order_details"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:text="City :"
+                        android:textColor="@color/black"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/spDeliveryCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_spinner"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:text="Area : "
+                        android:textColor="@color/black"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/spDeliveryArea"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_spinner"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/etDeliveryAddresLine1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="10sp"
+                    android:hint="Address Line 1"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <EditText
+                    android:id="@+id/etDeliveryAddresLine2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="10sp"
+                    android:hint="Address Line 2"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <EditText
+                    android:id="@+id/etDeliveryLandmark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location2"
+                    android:drawablePadding="10sp"
+                    android:hint="Landmark"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:text="Time Slot :"
+                        android:textColor="@color/black"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/spDeliveryTimeSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_spinner"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:text="Your Parcel Details"
+                android:textColor="@color/light_blue"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/background_new_order_details"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="5dp"
+                        android:text="Item Type :"
+                        android:textColor="@color/black"
+                        android:textSize="19sp" />
+
+                    <Spinner
+                        android:id="@+id/spItemType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_spinner"
+                        android:spinnerMode="dropdown" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/etItemName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_item"
+                    android:drawablePadding="10sp"
+                    android:hint="Item Name"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <EditText
+                    android:id="@+id/etItemWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_weight"
+                    android:drawablePadding="10sp"
+                    android:hint="Item Weight (Kg)"
+                    android:inputType="numberDecimal"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Maximum 4Kg" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/rlFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/background_new_order_price"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="2dp">
+
+        <TextView
+            android:id="@+id/tvP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Price : "
+            android:textColor="@color/light_blue"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tvP"
+            android:hint="Amount"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnCreateOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/background_button"
+            android:elevation="2dp"
+            android:text="Create Order"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
