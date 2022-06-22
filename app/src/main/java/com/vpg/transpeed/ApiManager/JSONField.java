@@ -6,7 +6,7 @@ public class JSONField {
     public static final String SUCCESS = "success";
     public static final String MSG = "message";
 
-    //registration and login fields
+    //user fields
     public static final String USER_ID = "user_id";
     public static final String USER_NAME = "name";
     public static final String USER_EMAIL = "email";
@@ -15,5 +15,33 @@ public class JSONField {
     public static final String USER_ALTERNATIVE_MOBILE = "alternative_mobile";
     public static final String USER_TYPE = "user_type";
     public static final String USER_TYPE_ARRAY = "user_type_array";
+    public static final String USER_ARRAY = "user_array";
+    public static final String NEW_PASSWORD = "new_password";
+
+    //city fields
+    public static final String CITY_ID = "city_id";
+    public static final String CITY_NAME = "city_name";
+    public static final String CITY_ARRAY = "city_array";
+
+    //area fields
+    public static final String PINCODE = "pincode";
+    public static final String AREA_NAME = "area_name";
+    public static final String AREA_ARRAY = "area_array";
+
+    //order fields
+    public static final String PICKUP_ADDRESS_LINE1 = "pickup_address_line1";
+    public static final String PICKUP_ADDRESS_LINE2 = "pickup_address_line2";
+    public static final String PICKUP_LANDMARK = "pickup_landmark";
+    public static final String PICKUP_PINCODE = "pickup_pincode";
+    public static final String DELIVERY_ADDRESS_LINE1 = "delivery_address_line1";
+    public static final String DELIVERY_ADDRESS_LINE2 = "delivery_address_line2";
+    public static final String DELIVERY_LANDMARK = "delivery_landmark";
+    public static final String DELIVERY_PINCODE = "delivery_pincode";
+    public static final String ITEM_TYPE = "item_type";
+    public static final String ITEM_NAME = "item_name";
+    public static final String ITEM_WEIGHT = "item_weight";
+    public static final String DISTANCE = "distance";
+    public static final String PICKUP_TIME_SLOT_START = "pickup_time_slot_start";
+    public static final String DELIVERY_TIME_SLOT_START = "delivery_time_slot_start";
 
 }

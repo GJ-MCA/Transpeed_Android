@@ -28,7 +28,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
-                    android:background="@drawable/ic_wave" />
+                    android:background="@drawable/wave" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                     android:maxLength="10"
                     android:background="@drawable/background_edittext"
                     android:drawableStart="@drawable/ic_phone"
-                    android:drawablePadding="15dp"
+                    android:drawablePadding="10dp"
                     android:hint="Mobile Number"
                     android:inputType="phone"
                     android:textColor="@android:color/black"
@@ -67,7 +67,7 @@
                     android:layout_marginTop="20sp"
                     android:background="@drawable/background_edittext"
                     android:drawableStart="@drawable/ic_lock"
-                    android:drawablePadding="15dp"
+                    android:drawablePadding="10dp"
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:textColor="@android:color/black"

@@ -139,7 +139,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "Try Again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
