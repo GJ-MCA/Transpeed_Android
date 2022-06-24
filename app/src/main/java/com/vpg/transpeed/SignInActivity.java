@@ -68,7 +68,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
 
             case R.id.btnSignIn:
-                if (checkMobile() /*&& checkPassword()*/) {
+                if (true/*checkMobile() && checkPassword()*/) {
                     sendSignInRequest();
                 } else {
                     FancyToast.makeText(SignInActivity.this, "Enter valid details", FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show();

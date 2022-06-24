@@ -1,6 +1,12 @@
 package com.vpg.transpeed.Customer.Fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -15,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,15 +33,21 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.shashank.sony.fancytoastlib.FancyToast;
 import com.vpg.transpeed.ApiManager.JSONField;
 import com.vpg.transpeed.ApiManager.WebURL;
+import com.vpg.transpeed.Customer.CustomerHomeActivity;
 import com.vpg.transpeed.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,16 +104,27 @@ public class CustomerNewOrderFragment extends Fragment {
     EditText etPickUpAddresLine1, etPickUpAddresLine2, etPickUpLandmark, etItemName;
     EditText etDeliveryAddresLine1, etDeliveryAddresLine2, etDeliveryLandmark, etItemWeight;
     Button btnCreateOrder;
-    TextView tvPrice;
+    TextView tvPrice, tvPickUpDate, tvDeliveryDate, tvPickUpSlot, tvDeliverySlot;
 
     ProgressDialog dialog;
+    DatePickerDialog datePickerDialog;
+    final Calendar calendar = Calendar.getInstance();
 
     ArrayList<String> pickupCityList = new ArrayList<>();
     ArrayList<String> deliveryCityList = new ArrayList<>();
     ArrayList<String> pickupAreaList = new ArrayList<>();
     ArrayList<String> deliveryAreaList = new ArrayList<>();
+    ArrayList<String> pickupTimeSlotList = new ArrayList<>();
+    ArrayList<String> deliveryTimeSlotList = new ArrayList<>();
+    ArrayList<String> itemTypeList = new ArrayList<>();
 
-    String pickupCity, pickupArea, deliveryCity, deliveryArea, itemType;
+    String pickupCity, deliveryCity, itemType, pickupDate, deliveryDate;
+    String[] pickupArea, deliveryArea, pickupTimeSlot, deliveryTimeSlot;
+    int dayCompare;
+
+    public static final String PROFILE = "profile";
+    public static final String ID_KEY = "user_id";
+    String user_id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -133,6 +157,10 @@ public class CustomerNewOrderFragment extends Fragment {
         btnCreateOrder = view.findViewById(R.id.btnCreateOrder);
 
         tvPrice = view.findViewById(R.id.tvPrice);
+        tvPickUpDate = view.findViewById(R.id.tvPickUpDate);
+        tvDeliveryDate = view.findViewById(R.id.tvDeliveryDate);
+        tvPickUpSlot = view.findViewById(R.id.tvPickUpSlot);
+        tvDeliverySlot = view.findViewById(R.id.tvDeliverySlot);
         //finish view binding
 
         dialog = new ProgressDialog(getContext());
@@ -140,8 +168,21 @@ public class CustomerNewOrderFragment extends Fragment {
         dialog.setMessage("Please Wait!");
         dialog.setCancelable(false);
 
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        SharedPreferences preferences = getContext().getSharedPreferences(PROFILE, Context.MODE_PRIVATE);
+        user_id = preferences.getString(ID_KEY, "");
+
         updatePickupCitySpinner();
         updateDeliveryCitySpinner();
+        updateItemType();
+
+        tvPickUpDate.setText(day + "/" + month + "/" + year);
+        updatePickupTimeslot(day);
+        tvDeliveryDate.setText(day + "/" + month + "/" + year);
+        updateDeliveryTimeslot(day);
 
         spPickUpCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -162,7 +203,8 @@ public class CustomerNewOrderFragment extends Fragment {
         spPickUpArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                pickupArea = pickupAreaList.get(i);
+                pickupArea = pickupAreaList.get(i).split("-", 2);
+                ;
             }
 
             @Override
@@ -190,7 +232,7 @@ public class CustomerNewOrderFragment extends Fragment {
         spDeliveryArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                deliveryArea = deliveryAreaList.get(i);
+                deliveryArea = deliveryAreaList.get(i).split("-", 2);
             }
 
             @Override
@@ -199,7 +241,381 @@ public class CustomerNewOrderFragment extends Fragment {
             }
         });
 
+        spPickUpTimeSlot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                pickupTimeSlot = pickupTimeSlotList.get(i).split("-", 2);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        spDeliveryTimeSlot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                deliveryTimeSlot = deliveryTimeSlotList.get(i).split("-", 2);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        spItemType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                itemType = itemTypeList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        tvPickUpDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                        pickupDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+                        tvPickUpDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                        dayCompare = dayOfMonth;
+                        updatePickupTimeslot(dayOfMonth);
+
+                    }
+                }, year, month, day);
+                datePickerDialog.show();
+
+            }
+        });
+
+        tvDeliveryDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                        if (dayCompare < dayOfMonth) {
+                            deliveryDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+                            tvDeliveryDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                        } else {
+                            tvDeliveryDate.setError("Delivery Date must after Pick-up Date");
+                        }
+                        updateDeliveryTimeslot(dayOfMonth);
+
+                    }
+                }, year, month, day);
+                datePickerDialog.show();
+
+            }
+        });
+
+        btnCreateOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Log.d("Create Order", " dc" + pickupCity + pickupArea[0] + pickupDate + pickupTimeSlot[0] + deliveryCity + deliveryArea[0] + deliveryDate + deliveryTimeSlot[0] + itemType);
+
+                if (!etPickUpAddresLine1.getText().toString().equals("") &&
+                        !etPickUpAddresLine2.getText().toString().equals("") &&
+                        !etPickUpLandmark.getText().toString().equals("") &&
+                        !etDeliveryAddresLine1.getText().toString().equals("") &&
+                        !etDeliveryAddresLine2.getText().toString().equals("") &&
+                        !etDeliveryLandmark.getText().toString().equals("") &&
+                        !etItemName.getText().toString().equals("") &&
+                        !etItemWeight.getText().toString().equals("") &&
+                        pickupCity != null &&
+                        pickupArea[0] != null &&
+                        pickupDate != null &&
+                        pickupTimeSlot[0] != null &&
+                        deliveryCity != null &&
+                        deliveryArea[0] != null &&
+                        deliveryDate != null &&
+                        deliveryTimeSlot[0] != null &&
+                        itemType != null
+                ) {
+
+                    sendCreateNewOrderRequest();
+
+                } else {
+                    FancyToast.makeText(getContext(), "fill all details", FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
+                }
+
+            }
+        });
+
         return view;
+    }
+
+    private void sendCreateNewOrderRequest() {
+        dialog.show();
+        //fill delivery time slot spinner
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, WebURL.NEW_ORDER_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseJSONCreateNewOrder(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                dialog.dismiss();
+            }
+        }) {
+
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<>();
+                params.put(JSONField.USER_ID, user_id);
+                params.put(JSONField.PICKUP_ADDRESS_LINE1, etPickUpAddresLine1.getText().toString());
+                params.put(JSONField.PICKUP_ADDRESS_LINE2, etPickUpAddresLine2.getText().toString());
+                params.put(JSONField.PICKUP_LANDMARK, etPickUpLandmark.getText().toString());
+                params.put(JSONField.PICKUP_PINCODE, pickupArea[1]);
+                params.put(JSONField.PICKUP_DATE, pickupDate);
+                params.put(JSONField.PICKUP_TIME_SLOT_START, pickupTimeSlot[0]);
+                params.put(JSONField.DELIVERY_ADDRESS_LINE1, etDeliveryAddresLine1.getText().toString());
+                params.put(JSONField.DELIVERY_ADDRESS_LINE2, etDeliveryAddresLine2.getText().toString());
+                params.put(JSONField.DELIVERY_LANDMARK, etDeliveryLandmark.getText().toString());
+                params.put(JSONField.DELIVERY_PINCODE, deliveryArea[1]);
+                params.put(JSONField.DELIVERY_DATE, deliveryDate);
+                params.put(JSONField.DELIVERY_TIME_SLOT_START, deliveryTimeSlot[0]);
+                params.put(JSONField.ITEM_TYPE, itemType);
+                params.put(JSONField.ITEM_NAME, etItemName.getText().toString());
+                params.put(JSONField.ITEM_WEIGHT, etItemWeight.getText().toString());
+                params.put(JSONField.DISTANCE, "12.5");
+                return params;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(stringRequest);
+    }
+
+    private void parseJSONCreateNewOrder(String response) {
+        Log.d("NEW ORDER RESPONSE", response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            int success = jsonObject.optInt(JSONField.SUCCESS);
+            String msg = jsonObject.getString(JSONField.MSG);
+            long trackId = jsonObject.getLong(JSONField.TRACKING_ID);
+            FancyToast.makeText(getContext(), "Your Order Booked", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+            Intent intent = new Intent(getContext(), CustomerHomeActivity.class);
+            startActivity(intent);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            dialog.dismiss();
+        }
+        dialog.dismiss();
+    }
+
+    private void updateItemType() {
+        dialog.show();
+        //fill delivery time slot spinner
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebURL.ITEM_TYPE_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseJSONItemType(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                dialog.dismiss();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(stringRequest);
+    }
+
+    private void parseJSONItemType(String response) {
+        Log.d("DELIVERY TIME SLOT RESPONSE", response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            int success = jsonObject.optInt(JSONField.SUCCESS);
+            String msg = jsonObject.getString(JSONField.MSG);
+
+            if (success == 1) {
+                JSONArray jsonArray = jsonObject.getJSONArray(JSONField.ITEM_TYPE_ARRAY);
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject objTimeSlot = jsonArray.getJSONObject(i);
+                        String itemTypes = objTimeSlot.optString(JSONField.ITEM_TYPE);
+                        String itemTypeId = objTimeSlot.optString(JSONField.ITEM_TYPE_ID);
+                        itemTypeList.add(itemTypes);
+                    }
+                    dialog.dismiss();
+                    //set area in pickup spinner
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, itemTypeList);
+                    spItemType.setAdapter(adapter);
+                    itemType = itemTypeList.get(0);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            dialog.dismiss();
+        }
+        dialog.dismiss();
+    }
+
+    private void updateDeliveryTimeslot(int dayOfMonth) {
+        dialog.show();
+        //fill delivery time slot spinner
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebURL.TIME_SLOT_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseJSONDeliveryTimeSlot(response, dayOfMonth);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                dialog.dismiss();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(stringRequest);
+    }
+
+    private void parseJSONDeliveryTimeSlot(String response, int dayOfMonth) {
+        Log.d("DELIVERY TIME SLOT RESPONSE", response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            int success = jsonObject.optInt(JSONField.SUCCESS);
+            String msg = jsonObject.getString(JSONField.MSG);
+
+            if (success == 1) {
+                JSONArray jsonArray = jsonObject.getJSONArray(JSONField.TIME_SLOT_ARRAY);
+                if (jsonArray.length() > 0) {
+                    deliveryTimeSlotList.clear();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject objTimeSlot = jsonArray.getJSONObject(i);
+                        String timeSlotStart = objTimeSlot.optString(JSONField.TIME_SLOT_START);
+                        String timeSlotEnd = objTimeSlot.optString(JSONField.TIME_SLOT_END);
+                        String timeSlotId = objTimeSlot.optString(JSONField.TIME_SLOT_ID);
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+                        int day = Integer.parseInt(sdf.format(new Date()));
+                        Log.d("day", String.valueOf(day));
+                        if (day == dayOfMonth) {
+                            //SimpleDateFormat sdf1 = new SimpleDateFormat("HH");
+                            //int hours = Integer.parseInt(sdf1.format(new Date()));
+                            int hours = calendar.get(Calendar.HOUR_OF_DAY);
+                            Log.d("HOURS", String.valueOf(hours));
+                            if (Integer.parseInt(timeSlotStart) > hours) {
+                                deliveryTimeSlotList.add(timeSlotStart + "-" + timeSlotEnd);
+                            }
+                        } else {
+                            deliveryTimeSlotList.add(timeSlotStart + "-" + timeSlotEnd);
+                        }
+                    }
+                    dialog.dismiss();
+                    if (deliveryTimeSlotList.size() == 0) {
+                        tvDeliverySlot.setVisibility(View.VISIBLE);
+                    } else {
+                        tvDeliverySlot.setVisibility(View.GONE);
+                        //set area in pickup spinner
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, deliveryTimeSlotList);
+                        spDeliveryTimeSlot.setAdapter(adapter);
+                        deliveryTimeSlot = deliveryTimeSlotList.get(0).split("-", 2);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            dialog.dismiss();
+        }
+        dialog.dismiss();
+    }
+
+    private void updatePickupTimeslot(int dayOfMonth) {
+
+        dialog.show();
+        //fill pickup time slot spinner
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebURL.TIME_SLOT_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseJSONPickupTimeSlot(response, dayOfMonth);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                dialog.dismiss();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(stringRequest);
+
+    }
+
+    private void parseJSONPickupTimeSlot(String response, int dayOfMonth) {
+
+        Log.d("PICKUP TIME SLOT RESPONSE", response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            int success = jsonObject.optInt(JSONField.SUCCESS);
+            String msg = jsonObject.getString(JSONField.MSG);
+
+            if (success == 1) {
+                JSONArray jsonArray = jsonObject.getJSONArray(JSONField.TIME_SLOT_ARRAY);
+                if (jsonArray.length() > 0) {
+                    pickupTimeSlotList.clear();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject objTimeSlot = jsonArray.getJSONObject(i);
+                        String timeSlotStart = objTimeSlot.optString(JSONField.TIME_SLOT_START);
+                        String timeSlotEnd = objTimeSlot.optString(JSONField.TIME_SLOT_END);
+                        String timeSlotId = objTimeSlot.optString(JSONField.TIME_SLOT_ID);
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+                        int day = Integer.parseInt(sdf.format(new Date()));
+                        if (day == dayOfMonth) {
+                            //SimpleDateFormat sdf1 = new SimpleDateFormat("HH");
+                            //int hours = Integer.parseInt(sdf1.format(new Date()));
+                            int hours = calendar.get(Calendar.HOUR_OF_DAY);
+                            Log.d("HOURS", String.valueOf(hours));
+                            if (Integer.parseInt(timeSlotStart) > hours) {
+                                pickupTimeSlotList.add(timeSlotStart + "-" + timeSlotEnd);
+                            }
+                        } else {
+                            pickupTimeSlotList.add(timeSlotStart + "-" + timeSlotEnd);
+                        }
+                    }
+                    dialog.dismiss();
+                    if (pickupTimeSlotList.size() == 0) {
+                        tvPickUpSlot.setVisibility(View.VISIBLE);
+                    } else {
+                        //set area in pickup spinner
+                        tvPickUpSlot.setVisibility(View.GONE);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, pickupTimeSlotList);
+                        spPickUpTimeSlot.setAdapter(adapter);
+                        pickupTimeSlot = pickupTimeSlotList.get(0).split("-", 2);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            dialog.dismiss();
+        }
+        dialog.dismiss();
     }
 
     private void updatePickupAreaSpinner() {
@@ -214,6 +630,7 @@ public class CustomerNewOrderFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                dialog.dismiss();
             }
         }) {
             @Nullable
@@ -255,6 +672,7 @@ public class CustomerNewOrderFragment extends Fragment {
                     //set area in pickup spinner
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, pickupAreaList);
                     spPickUpArea.setAdapter(adapter);
+                    pickupArea = pickupAreaList.get(0).split("-", 2);
                 }
             }
         } catch (JSONException e) {
@@ -276,6 +694,7 @@ public class CustomerNewOrderFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                dialog.dismiss();
             }
         }) {
             @Nullable
@@ -317,6 +736,7 @@ public class CustomerNewOrderFragment extends Fragment {
                     //set area in delivery spinner
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, deliveryAreaList);
                     spDeliveryArea.setAdapter(adapter);
+                    deliveryArea = deliveryAreaList.get(0).split("-", 2);
                 }
             }
         } catch (JSONException e) {
@@ -338,6 +758,7 @@ public class CustomerNewOrderFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                dialog.dismiss();
             }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -384,6 +805,7 @@ public class CustomerNewOrderFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                dialog.dismiss();
             }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());

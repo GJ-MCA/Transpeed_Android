@@ -316,6 +316,6 @@ public class CustomerProfileFragment extends Fragment implements View.OnClickLis
             e.printStackTrace();
         }
         dialog.dismiss();
-
     }
+
 }

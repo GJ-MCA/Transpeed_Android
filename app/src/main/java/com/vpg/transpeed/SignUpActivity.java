@@ -205,8 +205,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
 
             case R.id.btnSignUp:
-                if (checkUserName() && checkEmail() && checkPassword() && checkConPassword()
-                        && checkMobile() && checkAltMobile()) {
+                if (checkUserName() && checkEmail() && checkMobile() && checkAltMobile()
+                        && checkPassword() && checkConPassword()) {
                     sendSignUpRequest();
                 }
                 break;
@@ -312,7 +312,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if (Patterns.PHONE.matcher(etAltMobile.getText().toString().trim()).matches()) {
             isValidMobile = true;
         } else {
-            etMobile.setError("Enter Correct Mobile Alternative Number");
+            etAltMobile.setError("Enter Correct Mobile Alternative Number");
         }
 
         return isValidMobile;

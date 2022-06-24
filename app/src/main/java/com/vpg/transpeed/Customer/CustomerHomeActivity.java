@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -24,7 +25,14 @@ public class CustomerHomeActivity extends AppCompatActivity {
 
         bnvMenu = findViewById(R.id.bnvMenu);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.flFragContainer, new CustomerHomeFragment()).commit();
+        Intent intent = getIntent();
+        int number = intent.getIntExtra("PROFILE", 0);
+        if (number == 3) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.flFragContainer, new CustomerProfileFragment()).commit();
+            bnvMenu.setSelectedItemId(R.id.menu_profile);
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.flFragContainer, new CustomerHomeFragment()).commit();
+        }
 
         bnvMenu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
