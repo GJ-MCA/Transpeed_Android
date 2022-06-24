@@ -24,6 +24,7 @@ import com.shashank.sony.fancytoastlib.FancyToast;
 import com.vpg.transpeed.ApiManager.JSONField;
 import com.vpg.transpeed.ApiManager.WebURL;
 import com.vpg.transpeed.Customer.CustomerHomeActivity;
+import com.vpg.transpeed.Customer.Fragments.CustomerProfileFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -183,4 +184,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
         return isValidConPassword;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(ChangePasswordActivity.this, CustomerHomeActivity.class);
+        intent.putExtra("PROFILE", 3);
+        startActivity(intent);
+    }
 }

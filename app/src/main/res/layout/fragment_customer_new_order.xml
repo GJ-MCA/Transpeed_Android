@@ -52,9 +52,48 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
+                <EditText
+                    android:id="@+id/etPickUpAddresLine1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="10sp"
+                    android:hint="Address Line 1"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <EditText
+                    android:id="@+id/etPickUpAddresLine2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="10sp"
+                    android:hint="Address Line 2"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <EditText
+                    android:id="@+id/etPickUpLandmark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location2"
+                    android:drawablePadding="10sp"
+                    android:hint="Landmark"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -99,50 +138,34 @@
 
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/etPickUpAddresLine1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/background_edittext"
-                    android:drawableStart="@drawable/ic_location"
-                    android:drawablePadding="10sp"
-                    android:hint="Address Line 1"
-                    android:inputType="text"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@color/grey" />
-
-                <EditText
-                    android:id="@+id/etPickUpAddresLine2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/background_edittext"
-                    android:drawableStart="@drawable/ic_location"
-                    android:drawablePadding="10sp"
-                    android:hint="Address Line 2"
-                    android:inputType="text"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@color/grey" />
-
-                <EditText
-                    android:id="@+id/etPickUpLandmark"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/background_edittext"
-                    android:drawableStart="@drawable/ic_location2"
-                    android:drawablePadding="10sp"
-                    android:hint="Landmark"
-                    android:inputType="text"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@color/grey" />
-
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="Schedule pick-up Date :"
+                        android:textColor="@color/black"
+                        android:textSize="19sp" />
+
+                    <TextView
+                        android:id="@+id/tvPickUpDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/light_blue"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -154,14 +177,35 @@
                         android:textColor="@color/black"
                         android:textSize="19sp" />
 
-                    <Spinner
-                        android:id="@+id/spPickUpTimeSlot"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_spinner"
-                        android:spinnerMode="dropdown" />
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvPickUpSlot"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No Slots Available"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"/>
+
+                        <Spinner
+                            android:id="@+id/spPickUpTimeSlot"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/background_spinner"
+                            android:spinnerMode="dropdown" />
+
+                    </FrameLayout>
 
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Schedule pick-up time slot (in hours)"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/grey" />
 
             </LinearLayout>
 
@@ -183,9 +227,48 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
+                <EditText
+                    android:id="@+id/etDeliveryAddresLine1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="10sp"
+                    android:hint="Address Line 1"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <EditText
+                    android:id="@+id/etDeliveryAddresLine2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="10sp"
+                    android:hint="Address Line 2"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
+                <EditText
+                    android:id="@+id/etDeliveryLandmark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_edittext"
+                    android:drawableStart="@drawable/ic_location2"
+                    android:drawablePadding="10sp"
+                    android:hint="Landmark"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/grey" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -230,50 +313,35 @@
 
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/etDeliveryAddresLine1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/background_edittext"
-                    android:drawableStart="@drawable/ic_location"
-                    android:drawablePadding="10sp"
-                    android:hint="Address Line 1"
-                    android:inputType="text"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@color/grey" />
-
-                <EditText
-                    android:id="@+id/etDeliveryAddresLine2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/background_edittext"
-                    android:drawableStart="@drawable/ic_location"
-                    android:drawablePadding="10sp"
-                    android:hint="Address Line 2"
-                    android:inputType="text"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@color/grey" />
-
-                <EditText
-                    android:id="@+id/etDeliveryLandmark"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/background_edittext"
-                    android:drawableStart="@drawable/ic_location2"
-                    android:drawablePadding="10sp"
-                    android:hint="Landmark"
-                    android:inputType="text"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@color/grey" />
-
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="Schedule delivery Date :"
+                        android:textColor="@color/black"
+                        android:textSize="19sp" />
+
+                    <TextView
+                        android:id="@+id/tvDeliveryDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Pick Delivery Date"
+                        android:textColor="@color/light_blue"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -285,14 +353,34 @@
                         android:textColor="@color/black"
                         android:textSize="19sp" />
 
-                    <Spinner
-                        android:id="@+id/spDeliveryTimeSlot"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_spinner"
-                        android:spinnerMode="dropdown" />
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvDeliverySlot"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No Slots Available"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <Spinner
+                            android:id="@+id/spDeliveryTimeSlot"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/background_spinner"
+                            android:spinnerMode="dropdown" />
+                    </FrameLayout>
 
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Schedule delivery time slot (in hours)"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/grey" />
 
             </LinearLayout>
 
@@ -341,7 +429,7 @@
                     android:id="@+id/etItemName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/background_edittext"
                     android:drawableStart="@drawable/ic_item"
                     android:drawablePadding="10sp"
@@ -354,7 +442,7 @@
                     android:id="@+id/etItemWeight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/background_edittext"
                     android:drawableStart="@drawable/ic_weight"
                     android:drawablePadding="10sp"
@@ -366,7 +454,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Maximum 4Kg" />
+                    android:text="Maximum 4Kg"
+                    android:textColor="@color/grey" />
 
             </LinearLayout>
 

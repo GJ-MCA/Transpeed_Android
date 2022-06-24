@@ -29,6 +29,7 @@ public class JSONField {
     public static final String AREA_ARRAY = "area_array";
 
     //order fields
+    public static final String TRACKING_ID = "order_id";
     public static final String PICKUP_ADDRESS_LINE1 = "pickup_address_line1";
     public static final String PICKUP_ADDRESS_LINE2 = "pickup_address_line2";
     public static final String PICKUP_LANDMARK = "pickup_landmark";
@@ -38,10 +39,20 @@ public class JSONField {
     public static final String DELIVERY_LANDMARK = "delivery_landmark";
     public static final String DELIVERY_PINCODE = "delivery_pincode";
     public static final String ITEM_TYPE = "item_type";
+    public static final String ITEM_TYPE_ARRAY = "item_type_array";
+    public static final String ITEM_TYPE_ID = "item_type_id";
     public static final String ITEM_NAME = "item_name";
     public static final String ITEM_WEIGHT = "item_weight";
     public static final String DISTANCE = "distance";
+    public static final String PICKUP_DATE = "pickup_date";
+    public static final String DELIVERY_DATE = "delivery_date";
     public static final String PICKUP_TIME_SLOT_START = "pickup_time_slot_start";
     public static final String DELIVERY_TIME_SLOT_START = "delivery_time_slot_start";
+
+    //time slot fields
+    public static final String TIME_SLOT_ID = "time_slot_id";
+    public static final String TIME_SLOT_START = "time_slot_start";
+    public static final String TIME_SLOT_END = "time_slot_end";
+    public static final String TIME_SLOT_ARRAY = "time_slot_array";
 
 }
