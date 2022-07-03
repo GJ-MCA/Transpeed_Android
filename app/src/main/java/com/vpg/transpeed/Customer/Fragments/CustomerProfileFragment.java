@@ -203,6 +203,7 @@ public class CustomerProfileFragment extends Fragment implements View.OnClickLis
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            dialog.dismiss();
         }
         dialog.dismiss();
     }

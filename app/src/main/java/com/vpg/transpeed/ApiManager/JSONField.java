@@ -34,20 +34,32 @@ public class JSONField {
     public static final String PICKUP_ADDRESS_LINE2 = "pickup_address_line2";
     public static final String PICKUP_LANDMARK = "pickup_landmark";
     public static final String PICKUP_PINCODE = "pickup_pincode";
+    public static final String PICKUP_AREA_NAME = "pickup_area_name";
+    public static final String PICKUP_CITY_NAME = "pickup_city_name";
     public static final String DELIVERY_ADDRESS_LINE1 = "delivery_address_line1";
     public static final String DELIVERY_ADDRESS_LINE2 = "delivery_address_line2";
     public static final String DELIVERY_LANDMARK = "delivery_landmark";
     public static final String DELIVERY_PINCODE = "delivery_pincode";
+    public static final String DELIVERY_AREA_NAME = "delivery_area_name";
+    public static final String DELIVERY_CITY_NAME = "delivery_city_name";
+    public static final String ITEM_ID = "item_id";
     public static final String ITEM_TYPE = "item_type";
     public static final String ITEM_TYPE_ARRAY = "item_type_array";
     public static final String ITEM_TYPE_ID = "item_type_id";
     public static final String ITEM_NAME = "item_name";
     public static final String ITEM_WEIGHT = "item_weight";
     public static final String DISTANCE = "distance";
+    public static final String PRICE = "price";
     public static final String PICKUP_DATE = "pickup_date";
     public static final String DELIVERY_DATE = "delivery_date";
     public static final String PICKUP_TIME_SLOT_START = "pickup_time_slot_start";
+    public static final String PICKUP_TIME_SLOT_END = "pickup_time_slot_end";
     public static final String DELIVERY_TIME_SLOT_START = "delivery_time_slot_start";
+    public static final String DELIVERY_TIME_SLOT_END = "delivery_time_slot_end";
+    public static final String ORDER_DATE = "order_date";
+    public static final String ORDER_STATUS = "order_status";
+    public static final String MY_ORDERS_ARRAY = "my_orders_array";
+    public static final String MY_ORDER_DETAILS = "order_details";
 
     //time slot fields
     public static final String TIME_SLOT_ID = "time_slot_id";

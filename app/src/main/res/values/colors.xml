@@ -14,6 +14,7 @@
     <color name="app_background">#FFFFFFFF</color>
 <!--    for theme color for all views-->
     <color name="light_blue">#4AA1EB</color>
+    <color name="light_blue1">#654AA1EB</color>
 
     <color name="black_shade_0">#303030</color>
     <color name="black_shade_1">#292D36</color>

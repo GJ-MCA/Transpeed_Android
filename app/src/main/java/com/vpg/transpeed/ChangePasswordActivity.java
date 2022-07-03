@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -109,7 +110,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void parseJSONChangePassword(String response) {
-
+        Log.d("CHANGE PASSWORD RESPONSE", response);
         try {
             JSONObject jsonObject = new JSONObject(response);
             int success = jsonObject.optInt(JSONField.SUCCESS);
