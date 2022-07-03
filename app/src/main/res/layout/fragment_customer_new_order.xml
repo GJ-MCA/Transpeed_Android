@@ -341,7 +341,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -473,10 +472,27 @@
         android:paddingVertical="2dp">
 
         <TextView
+            android:id="@+id/tvD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distance(km) : "
+            android:textColor="@color/light_blue"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tvDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tvD"
+            android:hint="Distance"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
             android:id="@+id/tvP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_below="@+id/tvD"
             android:text="Price : "
             android:textColor="@color/light_blue"
             android:textSize="20sp" />
@@ -485,7 +501,7 @@
             android:id="@+id/tvPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_below="@+id/tvDistance"
             android:layout_toRightOf="@+id/tvP"
             android:hint="Amount"
             android:textColor="@color/black"
@@ -497,8 +513,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:background="@drawable/background_button"
-            android:elevation="2dp"
             android:text="Create Order"
+            android:layout_centerVertical="true"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="18sp"

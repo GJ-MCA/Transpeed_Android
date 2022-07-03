@@ -104,7 +104,7 @@ public class CustomerNewOrderFragment extends Fragment {
     EditText etPickUpAddresLine1, etPickUpAddresLine2, etPickUpLandmark, etItemName;
     EditText etDeliveryAddresLine1, etDeliveryAddresLine2, etDeliveryLandmark, etItemWeight;
     Button btnCreateOrder;
-    TextView tvPrice, tvPickUpDate, tvDeliveryDate, tvPickUpSlot, tvDeliverySlot;
+    TextView tvPrice, tvPickUpDate, tvDeliveryDate, tvPickUpSlot, tvDeliverySlot, tvDistance;
 
     ProgressDialog dialog;
     DatePickerDialog datePickerDialog;
@@ -161,6 +161,7 @@ public class CustomerNewOrderFragment extends Fragment {
         tvDeliveryDate = view.findViewById(R.id.tvDeliveryDate);
         tvPickUpSlot = view.findViewById(R.id.tvPickUpSlot);
         tvDeliverySlot = view.findViewById(R.id.tvDeliverySlot);
+        tvDistance = view.findViewById(R.id.tvDistance);
         //finish view binding
 
         dialog = new ProgressDialog(getContext());
@@ -178,6 +179,7 @@ public class CustomerNewOrderFragment extends Fragment {
         updatePickupCitySpinner();
         updateDeliveryCitySpinner();
         updateItemType();
+        updateDistance();
 
         tvPickUpDate.setText(day + "/" + month + "/" + year);
         updatePickupTimeslot(day);
@@ -204,7 +206,7 @@ public class CustomerNewOrderFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 pickupArea = pickupAreaList.get(i).split("-", 2);
-                ;
+                updateDistance();
             }
 
             @Override
@@ -233,6 +235,7 @@ public class CustomerNewOrderFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 deliveryArea = deliveryAreaList.get(i).split("-", 2);
+                updateDistance();
             }
 
             @Override
@@ -365,6 +368,56 @@ public class CustomerNewOrderFragment extends Fragment {
         return view;
     }
 
+    private void updateDistance() {
+        dialog.show();
+        //fill delivery time slot spinner
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, WebURL.DISTANCE_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseJSONDistance(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                dialog.dismiss();
+            }
+        }) {
+
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<>();
+                params.put(JSONField.PICKUP_PINCODE, pickupArea[0]);
+                params.put(JSONField.DELIVERY_PINCODE, deliveryArea[0]);
+                return params;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(stringRequest);
+    }
+
+    private void parseJSONDistance(String response) {
+        Log.d("DISTANCE RESPONSE", response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            int success = jsonObject.optInt(JSONField.SUCCESS);
+            String msg = jsonObject.getString(JSONField.MSG);
+            if (success == 1) {
+                String distance = jsonObject.getString(JSONField.DISTANCE);
+                tvDistance.setText(distance);
+                int price = (Integer.parseInt(distance) * 10) + 50;
+                tvPrice.setText(String.valueOf(price));
+            }
+            dialog.dismiss();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            dialog.dismiss();
+        }
+        dialog.dismiss();
+    }
+
     private void sendCreateNewOrderRequest() {
         dialog.show();
         //fill delivery time slot spinner
@@ -401,7 +454,8 @@ public class CustomerNewOrderFragment extends Fragment {
                 params.put(JSONField.ITEM_TYPE, itemType);
                 params.put(JSONField.ITEM_NAME, etItemName.getText().toString());
                 params.put(JSONField.ITEM_WEIGHT, etItemWeight.getText().toString());
-                params.put(JSONField.DISTANCE, "12.5");
+                params.put(JSONField.DISTANCE, tvDistance.getText().toString());
+                params.put(JSONField.PRICE, tvPrice.getText().toString());
                 return params;
             }
         };

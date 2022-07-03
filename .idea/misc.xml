@@ -29,12 +29,17 @@
         <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_chome.xml" value="0.175" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_customer_home.xml" value="0.22" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_my_order_details.xml" value="0.25" />
+        <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_my_orders.xml" value="0.25" />
+        <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_my_orders_list.xml" value="0.18703703703703703" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_sign_in.xml" value="0.22" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_sign_up.xml" value="0.22" />
+        <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_track_my_order.xml" value="0.25" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/activity_verify_otpactivity.xml" value="0.25" />
-        <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/fragment_customer_home.xml" value="0.175" />
+        <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/fragment_customer_home.xml" value="0.22" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/fragment_customer_new_order.xml" value="0.25" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/fragment_customer_profile.xml" value="0.25" />
+        <entry key="..\:/Projects/Transpeed/app/src/main/res/layout/my_orders_list.xml" value="0.25" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/menu/customer_menu.xml" value="0.175" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1175" />
         <entry key="..\:/Projects/Transpeed/app/src/main/res/xml/network_security_config.xml" value="0.18703703703703703" />

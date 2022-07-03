@@ -3,7 +3,7 @@ package com.vpg.transpeed.ApiManager;
 public class WebURL {
 
     //local url
-    private static final String IP_ADDRESS = "192.168.252.66";
+    private static final String IP_ADDRESS = "192.168.135.66";
     public static final String MAIN_URL = "http://" + IP_ADDRESS + "/Transpeed/APIs/";
 
     //registration api insert
@@ -31,6 +31,9 @@ public class WebURL {
     public static final String AREA_URL = MAIN_URL + "area.php";
 
     //create new order api insert
+    public static final String DISTANCE_URL = MAIN_URL + "distance.php";
+
+    //create new order api insert
     public static final String NEW_ORDER_URL = MAIN_URL + "newOrder.php";
 
     //create new order api select
@@ -38,5 +41,14 @@ public class WebURL {
 
     //create new order api select
     public static final String ITEM_TYPE_URL = MAIN_URL + "itemType.php";
+
+    //create my orders list api select
+    public static final String MY_ORDERS_URL = MAIN_URL + "myOrdersList.php";
+
+    //create my order details api select
+    public static final String MY_ORDER_DETAILS_URL = MAIN_URL + "myOrderDetails.php";
+
+    //create my order details api select
+    public static final String CANCEL_MY_ORDER_URL = MAIN_URL + "cancelOrder.php";
 
 }

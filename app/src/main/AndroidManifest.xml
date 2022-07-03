@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.vpg.transpeed">
+    package="com.vpg.transpeed" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,17 +13,24 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Transpeed"
-        tools:targetApi="31">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31" >
+        <activity
+            android:name=".Customer.MyOrderDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Customer.TrackMyOrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Customer.MyOrdersListActivity"
+            android:exported="false" />
         <activity
             android:name=".ChangePasswordActivity"
             android:exported="false" />
         <activity
             android:name=".Customer.CustomerHomeActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".VerifyOTPActivity"
             android:exported="false" />
@@ -35,7 +42,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
