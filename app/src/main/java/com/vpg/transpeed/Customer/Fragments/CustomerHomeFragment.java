@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.shashank.sony.fancytoastlib.FancyToast;
+import com.vpg.transpeed.Customer.MyOrderDetailsActivity;
 import com.vpg.transpeed.Customer.MyOrdersListActivity;
 import com.vpg.transpeed.Customer.TrackMyOrderActivity;
 import com.vpg.transpeed.R;
@@ -86,8 +88,12 @@ public class CustomerHomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //track order code
-                Intent intent = new Intent(getContext(), TrackMyOrderActivity.class);
-                startActivity(intent);
+                if (etTrackingId.getText().toString().equals("")) {
+                    FancyToast.makeText(getContext(), "Enter Tracking Id First", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
+                } else {
+                    Intent intent = new Intent(getContext(), TrackMyOrderActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 

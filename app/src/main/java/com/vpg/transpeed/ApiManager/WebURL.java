@@ -3,7 +3,7 @@ package com.vpg.transpeed.ApiManager;
 public class WebURL {
 
     //local url
-    private static final String IP_ADDRESS = "192.168.135.66";
+    private static final String IP_ADDRESS = "192.168.79.65";
     public static final String MAIN_URL = "http://" + IP_ADDRESS + "/Transpeed/APIs/";
 
     //registration api insert

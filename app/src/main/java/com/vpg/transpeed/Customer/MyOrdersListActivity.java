@@ -56,7 +56,7 @@ public class MyOrdersListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_orders_list);
 
         toolbar = findViewById(R.id.toolbar);
-        AppCompatActivity activity = (AppCompatActivity) getApplicationContext();
+        AppCompatActivity activity = this;
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setTitle("My Orders");
 

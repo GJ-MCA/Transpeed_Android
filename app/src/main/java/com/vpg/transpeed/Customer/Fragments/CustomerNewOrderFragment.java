@@ -119,8 +119,10 @@ public class CustomerNewOrderFragment extends Fragment {
     ArrayList<String> itemTypeList = new ArrayList<>();
 
     String pickupCity, deliveryCity, itemType, pickupDate, deliveryDate;
-    String[] pickupArea, deliveryArea, pickupTimeSlot, deliveryTimeSlot;
+    String[] pickupArea = {"", ""}, deliveryArea = {"", ""}, pickupTimeSlot, deliveryTimeSlot;
     int dayCompare;
+    float price;
+    String distance;
 
     public static final String PROFILE = "profile";
     public static final String ID_KEY = "user_id";
@@ -179,6 +181,8 @@ public class CustomerNewOrderFragment extends Fragment {
         updatePickupCitySpinner();
         updateDeliveryCitySpinner();
         updateItemType();
+        pickupArea[1] = "282345";
+        deliveryArea[1] = "282345";
         updateDistance();
 
         tvPickUpDate.setText(day + "/" + month + "/" + year);
@@ -388,8 +392,8 @@ public class CustomerNewOrderFragment extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<>();
-                params.put(JSONField.PICKUP_PINCODE, pickupArea[0]);
-                params.put(JSONField.DELIVERY_PINCODE, deliveryArea[0]);
+                params.put(JSONField.PICKUP_PINCODE, pickupArea[1]);
+                params.put(JSONField.DELIVERY_PINCODE, deliveryArea[1]);
                 return params;
             }
         };
@@ -404,10 +408,10 @@ public class CustomerNewOrderFragment extends Fragment {
             int success = jsonObject.optInt(JSONField.SUCCESS);
             String msg = jsonObject.getString(JSONField.MSG);
             if (success == 1) {
-                String distance = jsonObject.getString(JSONField.DISTANCE);
-                tvDistance.setText(distance);
-                int price = (Integer.parseInt(distance) * 10) + 50;
-                tvPrice.setText(String.valueOf(price));
+                distance = jsonObject.getString(JSONField.DISTANCE);
+                tvDistance.setText(distance + " km");
+                price = (Float.parseFloat(distance) * 10) + 50;
+                tvPrice.setText(price + "₹");
             }
             dialog.dismiss();
 
@@ -454,8 +458,8 @@ public class CustomerNewOrderFragment extends Fragment {
                 params.put(JSONField.ITEM_TYPE, itemType);
                 params.put(JSONField.ITEM_NAME, etItemName.getText().toString());
                 params.put(JSONField.ITEM_WEIGHT, etItemWeight.getText().toString());
-                params.put(JSONField.DISTANCE, tvDistance.getText().toString());
-                params.put(JSONField.PRICE, tvPrice.getText().toString());
+                params.put(JSONField.DISTANCE, distance);
+                params.put(JSONField.PRICE, String.valueOf(price));
                 return params;
             }
         };

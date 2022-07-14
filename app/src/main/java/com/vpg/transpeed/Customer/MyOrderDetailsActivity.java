@@ -1,11 +1,15 @@
 package com.vpg.transpeed.Customer;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +28,7 @@ import com.vpg.transpeed.ApiManager.JSONField;
 import com.vpg.transpeed.ApiManager.WebURL;
 import com.vpg.transpeed.ChangePasswordActivity;
 import com.vpg.transpeed.R;
+import com.vpg.transpeed.SignInActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,9 +57,9 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
         String order_id = intent.getStringExtra("order_id");
 
         toolbar = findViewById(R.id.toolbar);
-        AppCompatActivity activity = (AppCompatActivity) getApplicationContext();
+        AppCompatActivity activity = this;
         activity.setSupportActionBar(toolbar);
-        activity.getSupportActionBar().setTitle("My Order - " + order_id);
+        activity.getSupportActionBar().setTitle("Order No. - " + order_id);
 
         tvItemName = findViewById(R.id.tvItemName);
         tvItemWeight = findViewById(R.id.tvItemWeight);
@@ -97,7 +102,7 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 //track order code
-                Intent intent = new Intent(MyOrderDetailsActivity.this, MyOrderDetailsActivity.class);
+                Intent intent = new Intent(MyOrderDetailsActivity.this, TrackMyOrderActivity.class);
                 intent.putExtra("order_id", order_id);
                 startActivity(intent);
 
@@ -109,8 +114,27 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 //cancel order code
-                btnCancelOrder.setClickable(false);
-                sendCancelOrderRequest(order_id);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MyOrderDetailsActivity.this);
+
+                builder.setTitle("Cancel Order");
+                builder.setMessage("Are you sure?");
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        btnCancelOrder.setClickable(false);
+                        sendCancelOrderRequest(order_id);
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.show();
+
             }
         });
 
@@ -215,13 +239,15 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
                     String item_type = objOrderDetails.getString(JSONField.ITEM_TYPE);
                     String order_date = objOrderDetails.getString(JSONField.ORDER_DATE);
                     String distance = objOrderDetails.getString(JSONField.DISTANCE);
+                    String price = objOrderDetails.getString(JSONField.PRICE);
                     String order_status = objOrderDetails.getString(JSONField.ORDER_STATUS);
 
                     tvItemName.setText(item_name);
                     tvItemWeight.setText(item_weight);
                     tvItemType.setText(item_type);
                     tvOrderDate.setText(order_date);
-                    tvDistance.setText(distance);
+                    tvDistance.setText(distance + " km");
+                    tvPrice.setText(price + "₹");
                     tvOrderStatus.setText(order_status);
 
                     String pickup_address_line1 = objOrderDetails.getString(JSONField.PICKUP_ADDRESS_LINE1);
