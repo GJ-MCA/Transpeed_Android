@@ -87,6 +87,49 @@
                     android:textColor="@android:color/black"
                     android:textColorHint="@color/grey" />
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <EditText
+                        android:id="@+id/etEmailOTP"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:background="@drawable/background_edittext"
+                        android:hint="Email OTP"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/grey"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tvVerifyEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_toEndOf="@+id/etEmailOTP"
+                        android:text="Verify"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tvSendEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:text="Send"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
+
+                </RelativeLayout>
+
                 <EditText
                     android:id="@+id/etMobile"
                     android:layout_width="match_parent"
@@ -100,6 +143,49 @@
                     android:maxLength="10"
                     android:textColor="@android:color/black"
                     android:textColorHint="@color/grey" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <EditText
+                        android:id="@+id/etMobileOTP"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:background="@drawable/background_edittext"
+                        android:hint="Mobile OTP"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:visibility="gone"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/grey" />
+
+                    <TextView
+                        android:id="@+id/tvVerifyMobile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_toEndOf="@+id/etMobileOTP"
+                        android:text="Verify"
+                        android:visibility="gone"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tvSendMobile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:text="Send"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
+
+                </RelativeLayout>
 
                 <EditText
                     android:id="@+id/etAltMobile"
@@ -148,8 +234,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:gravity="center"
                     android:background="@drawable/background_spinner"
+                    android:gravity="center"
                     android:spinnerMode="dropdown" />
 
                 <Button

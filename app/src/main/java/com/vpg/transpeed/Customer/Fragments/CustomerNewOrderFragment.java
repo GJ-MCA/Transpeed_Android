@@ -5,16 +5,21 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +42,7 @@ import com.shashank.sony.fancytoastlib.FancyToast;
 import com.vpg.transpeed.ApiManager.JSONField;
 import com.vpg.transpeed.ApiManager.WebURL;
 import com.vpg.transpeed.Customer.CustomerHomeActivity;
+import com.vpg.transpeed.Customer.MyOrderDetailsActivity;
 import com.vpg.transpeed.R;
 
 import org.json.JSONArray;
@@ -101,10 +107,10 @@ public class CustomerNewOrderFragment extends Fragment {
     Toolbar toolbar;
     Spinner spPickUpCity, spPickUpArea, spPickUpTimeSlot, spItemType;
     Spinner spDeliveryCity, spDeliveryArea, spDeliveryTimeSlot;
-    EditText etPickUpAddresLine1, etPickUpAddresLine2, etPickUpLandmark, etItemName;
-    EditText etDeliveryAddresLine1, etDeliveryAddresLine2, etDeliveryLandmark, etItemWeight;
-    Button btnCreateOrder;
-    TextView tvPrice, tvPickUpDate, tvDeliveryDate, tvPickUpSlot, tvDeliverySlot, tvDistance;
+    EditText etPickUpAddresLine1, etPickUpAddresLine2, etPickUpLandmark, etItemName, etPickUpMobile;
+    EditText etDeliveryAddresLine1, etDeliveryAddresLine2, etDeliveryLandmark, etDeliveryMobile, etItemWeight;
+    Button btnCreateOrder, btnCalcPrice;
+    TextView tvPrice, tvPickUpDate, tvDeliveryDate, tvPickUpSlot, tvDeliverySlot, tvDistance, tvDeliveryDateError;
 
     ProgressDialog dialog;
     DatePickerDialog datePickerDialog;
@@ -120,9 +126,10 @@ public class CustomerNewOrderFragment extends Fragment {
 
     String pickupCity, deliveryCity, itemType, pickupDate, deliveryDate;
     String[] pickupArea = {"", ""}, deliveryArea = {"", ""}, pickupTimeSlot, deliveryTimeSlot;
-    int dayCompare;
-    float price;
+    int dayCompare, monthCompare, yearCompare;
+    float price = 50.0F, lastWeight, lastDistance;
     String distance;
+    boolean isPriceCalculated = false;
 
     public static final String PROFILE = "profile";
     public static final String ID_KEY = "user_id";
@@ -150,13 +157,16 @@ public class CustomerNewOrderFragment extends Fragment {
         etPickUpAddresLine1 = view.findViewById(R.id.etPickUpAddresLine1);
         etPickUpAddresLine2 = view.findViewById(R.id.etPickUpAddresLine2);
         etPickUpLandmark = view.findViewById(R.id.etPickUpLandmark);
+        etPickUpMobile = view.findViewById(R.id.etPickUpMobile);
         etDeliveryAddresLine1 = view.findViewById(R.id.etDeliveryAddresLine1);
         etDeliveryAddresLine2 = view.findViewById(R.id.etDeliveryAddresLine2);
         etDeliveryLandmark = view.findViewById(R.id.etDeliveryLandmark);
+        etDeliveryMobile = view.findViewById(R.id.etDeliveryMobile);
         etItemName = view.findViewById(R.id.etItemName);
         etItemWeight = view.findViewById(R.id.etItemWeight);
 
         btnCreateOrder = view.findViewById(R.id.btnCreateOrder);
+        btnCalcPrice = view.findViewById(R.id.btnCalcPrice);
 
         tvPrice = view.findViewById(R.id.tvPrice);
         tvPickUpDate = view.findViewById(R.id.tvPickUpDate);
@@ -164,10 +174,11 @@ public class CustomerNewOrderFragment extends Fragment {
         tvPickUpSlot = view.findViewById(R.id.tvPickUpSlot);
         tvDeliverySlot = view.findViewById(R.id.tvDeliverySlot);
         tvDistance = view.findViewById(R.id.tvDistance);
+        tvDeliveryDateError = view.findViewById(R.id.tvDeliveryDateError);
         //finish view binding
 
         dialog = new ProgressDialog(getContext());
-        dialog.setTitle("Loading...");
+        dialog.setTitle("Placing your order...");
         dialog.setMessage("Please Wait!");
         dialog.setCancelable(false);
 
@@ -181,8 +192,8 @@ public class CustomerNewOrderFragment extends Fragment {
         updatePickupCitySpinner();
         updateDeliveryCitySpinner();
         updateItemType();
-        pickupArea[1] = "282345";
-        deliveryArea[1] = "282345";
+//        pickupArea[1] = "282345";
+//        deliveryArea[1] = "282345";
         updateDistance();
 
         tvPickUpDate.setText(day + "/" + month + "/" + year);
@@ -299,6 +310,8 @@ public class CustomerNewOrderFragment extends Fragment {
                         pickupDate = year + "-" + (month + 1) + "-" + dayOfMonth;
                         tvPickUpDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                         dayCompare = dayOfMonth;
+                        monthCompare = month;
+                        yearCompare = year;
                         updatePickupTimeslot(dayOfMonth);
 
                     }
@@ -323,8 +336,9 @@ public class CustomerNewOrderFragment extends Fragment {
                         if (dayCompare < dayOfMonth) {
                             deliveryDate = year + "-" + (month + 1) + "-" + dayOfMonth;
                             tvDeliveryDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                            tvDeliveryDateError.setVisibility(View.GONE);
                         } else {
-                            tvDeliveryDate.setError("Delivery Date must after Pick-up Date");
+                            tvDeliveryDateError.setVisibility(View.VISIBLE);
                         }
                         updateDeliveryTimeslot(dayOfMonth);
 
@@ -339,14 +353,17 @@ public class CustomerNewOrderFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Log.d("Create Order", " dc" + pickupCity + pickupArea[0] + pickupDate + pickupTimeSlot[0] + deliveryCity + deliveryArea[0] + deliveryDate + deliveryTimeSlot[0] + itemType);
+                //Log.d("Create Order", " dc" + pickupCity + pickupArea[0] + pickupDate + pickupTimeSlot[0] + deliveryCity + deliveryArea[0] + deliveryDate + deliveryTimeSlot[0] + itemType);
 
+                calculatePrice();
                 if (!etPickUpAddresLine1.getText().toString().equals("") &&
                         !etPickUpAddresLine2.getText().toString().equals("") &&
                         !etPickUpLandmark.getText().toString().equals("") &&
+                        checkPickupMobiles() &&
                         !etDeliveryAddresLine1.getText().toString().equals("") &&
                         !etDeliveryAddresLine2.getText().toString().equals("") &&
                         !etDeliveryLandmark.getText().toString().equals("") &&
+                        checkDeliveryMobiles() &&
                         !etItemName.getText().toString().equals("") &&
                         !etItemWeight.getText().toString().equals("") &&
                         pickupCity != null &&
@@ -356,20 +373,101 @@ public class CustomerNewOrderFragment extends Fragment {
                         deliveryCity != null &&
                         deliveryArea[0] != null &&
                         deliveryDate != null &&
+                        isPriceCalculated &&
                         deliveryTimeSlot[0] != null &&
                         itemType != null
                 ) {
 
-                    sendCreateNewOrderRequest();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                    builder.setTitle("Place Order");
+                    builder.setMessage("Confirm ?");
+
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            btnCreateOrder.setClickable(false);
+                            sendCreateNewOrderRequest();
+                        }
+                    });
+
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.show();
 
                 } else {
-                    FancyToast.makeText(getContext(), "fill all details", FancyToast.LENGTH_SHORT, FancyToast.DEFAULT, false).show();
+                    FancyToast.makeText(getContext(), "please enter all details", FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show();
                 }
 
             }
         });
 
+        btnCalcPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calculatePrice();
+            }
+        });
+
+//        etItemWeight.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//                try {
+//                    float weight = Float.parseFloat(editable.toString());
+//                    if (weight > 5.0F) {
+//                        etItemWeight.setError("Maximum 5kg is allow");
+//                    } else {
+//                        price -= weightPrice;
+//                        weightPrice = weight * 10;
+//                        price += weightPrice;
+//                    }
+//                } catch (NumberFormatException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
         return view;
+    }
+
+    private void calculatePrice() {
+
+        if (!etItemWeight.getText().toString().equals("")) {
+            float weight = Float.parseFloat(etItemWeight.getText().toString());
+            Log.d("weight : ", String.valueOf(weight));
+            if (weight > 5) {
+                etItemWeight.setError("Maximum 5kg is allow");
+                isPriceCalculated = false;
+            } else {
+                Log.d("price : ", String.valueOf(price));
+                price -= lastWeight;
+                float weightPrice = weight * 10;
+                Log.d("weight price : ", String.valueOf(weightPrice));
+                lastWeight = weightPrice;
+                price += weightPrice;
+                Log.d("final price : ", String.valueOf(price));
+                tvPrice.setText("₹ " + price);
+                tvPrice.setVisibility(View.VISIBLE);
+                isPriceCalculated = true;
+            }
+        } else {
+            etItemWeight.setError("Enter your item weight");
+        }
+
     }
 
     private void updateDistance() {
@@ -410,8 +508,10 @@ public class CustomerNewOrderFragment extends Fragment {
             if (success == 1) {
                 distance = jsonObject.getString(JSONField.DISTANCE);
                 tvDistance.setText(distance + " km");
-                price = (Float.parseFloat(distance) * 10) + 50;
-                tvPrice.setText(price + "₹");
+                Log.d("price before distance : ", String.valueOf(price));
+                price -= lastDistance;
+                price += (lastDistance = Float.parseFloat(distance) * 10);
+                Log.d("price after distance : ", String.valueOf(price));
             }
             dialog.dismiss();
 
@@ -435,6 +535,8 @@ public class CustomerNewOrderFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 dialog.dismiss();
+                btnCreateOrder.setClickable(true);
+                FancyToast.makeText(getContext(), "Try again", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
             }
         }) {
 
@@ -448,12 +550,14 @@ public class CustomerNewOrderFragment extends Fragment {
                 params.put(JSONField.PICKUP_LANDMARK, etPickUpLandmark.getText().toString());
                 params.put(JSONField.PICKUP_PINCODE, pickupArea[1]);
                 params.put(JSONField.PICKUP_DATE, pickupDate);
+                params.put(JSONField.PICKUP_CONTACT_MOBILE, etPickUpMobile.getText().toString());
                 params.put(JSONField.PICKUP_TIME_SLOT_START, pickupTimeSlot[0]);
                 params.put(JSONField.DELIVERY_ADDRESS_LINE1, etDeliveryAddresLine1.getText().toString());
                 params.put(JSONField.DELIVERY_ADDRESS_LINE2, etDeliveryAddresLine2.getText().toString());
                 params.put(JSONField.DELIVERY_LANDMARK, etDeliveryLandmark.getText().toString());
                 params.put(JSONField.DELIVERY_PINCODE, deliveryArea[1]);
                 params.put(JSONField.DELIVERY_DATE, deliveryDate);
+                params.put(JSONField.DELIVERY_CONTACT_MOBILE, etDeliveryMobile.getText().toString());
                 params.put(JSONField.DELIVERY_TIME_SLOT_START, deliveryTimeSlot[0]);
                 params.put(JSONField.ITEM_TYPE, itemType);
                 params.put(JSONField.ITEM_NAME, etItemName.getText().toString());
@@ -474,15 +578,23 @@ public class CustomerNewOrderFragment extends Fragment {
             int success = jsonObject.optInt(JSONField.SUCCESS);
             String msg = jsonObject.getString(JSONField.MSG);
             long trackId = jsonObject.getLong(JSONField.TRACKING_ID);
-            FancyToast.makeText(getContext(), "Your Order Booked", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
-            Intent intent = new Intent(getContext(), CustomerHomeActivity.class);
-            startActivity(intent);
+            if (success == 1) {
+                dialog.dismiss();
+                FancyToast.makeText(getContext(), msg, FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+                Intent intent = new Intent(getContext(), CustomerHomeActivity.class);
+                startActivity(intent);
+            } else {
+                dialog.dismiss();
+                btnCreateOrder.setClickable(true);
+                FancyToast.makeText(getContext(), msg, FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show();
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
             dialog.dismiss();
+            btnCreateOrder.setClickable(true);
+            FancyToast.makeText(getContext(), "Try again", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
         }
-        dialog.dismiss();
     }
 
     private void updateItemType() {
@@ -842,6 +954,7 @@ public class CustomerNewOrderFragment extends Fragment {
                     dialog.dismiss();
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, pickupCityList);
                     spPickUpCity.setAdapter(adapter);
+                    pickupCity = pickupCityList.get(0);
                 }
             }
         } catch (JSONException e) {
@@ -889,6 +1002,7 @@ public class CustomerNewOrderFragment extends Fragment {
                     dialog.dismiss();
                     ArrayAdapter<String> adapter1 = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, deliveryCityList);
                     spDeliveryCity.setAdapter(adapter1);
+                    deliveryCity = deliveryCityList.get(0);
                 }
             }
         } catch (JSONException e) {
@@ -897,5 +1011,37 @@ public class CustomerNewOrderFragment extends Fragment {
         }
         dialog.dismiss();
     }
+
+    //mobile number validations
+    private boolean checkDeliveryMobiles() {
+
+        boolean isValidDeliveryMobile = false;
+
+        if (etDeliveryMobile.getText().toString().trim().length() <= 0) {
+            etDeliveryMobile.setError("Enter Mobile Number");
+        } else if (Patterns.PHONE.matcher(etDeliveryMobile.getText().toString().trim()).matches() && etDeliveryMobile.getText().toString().trim().length() == 10) {
+            isValidDeliveryMobile = true;
+        } else {
+            etDeliveryMobile.setError("Enter Correct Mobile Number");
+        }
+
+        return isValidDeliveryMobile;
+    }
+
+    private boolean checkPickupMobiles() {
+
+        boolean isValidPickupMobile = false;
+
+        if (etPickUpMobile.getText().toString().trim().length() <= 0) {
+            etPickUpMobile.setError("Enter Mobile Number");
+        } else if (Patterns.PHONE.matcher(etPickUpMobile.getText().toString().trim()).matches() && etPickUpMobile.getText().toString().trim().length() == 10) {
+            isValidPickupMobile = true;
+        } else {
+            etPickUpMobile.setError("Enter Correct Mobile Number");
+        }
+        return isValidPickupMobile;
+
+    }
+
 
 }

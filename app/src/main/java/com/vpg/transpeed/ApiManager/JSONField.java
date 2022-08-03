@@ -6,6 +6,10 @@ public class JSONField {
     public static final String SUCCESS = "success";
     public static final String MSG = "message";
 
+    //otp fields
+    public static final String EMAIL_OTP = "otp";
+    public static final String MOBILE_OTP = "otp";
+
     //user fields
     public static final String USER_ID = "user_id";
     public static final String USER_NAME = "name";
@@ -51,15 +55,27 @@ public class JSONField {
     public static final String DISTANCE = "distance";
     public static final String PRICE = "price";
     public static final String PICKUP_DATE = "pickup_date";
+    public static final String PICKUP_CONTACT_MOBILE = "pickup_contact_mobile";
     public static final String DELIVERY_DATE = "delivery_date";
+    public static final String DELIVERY_CONTACT_MOBILE = "delivery_contact_mobile";
     public static final String PICKUP_TIME_SLOT_START = "pickup_time_slot_start";
     public static final String PICKUP_TIME_SLOT_END = "pickup_time_slot_end";
     public static final String DELIVERY_TIME_SLOT_START = "delivery_time_slot_start";
     public static final String DELIVERY_TIME_SLOT_END = "delivery_time_slot_end";
     public static final String ORDER_DATE = "order_date";
     public static final String ORDER_STATUS = "order_status";
+    public static final String ORDER_STATUS_ID = "status_id";
     public static final String MY_ORDERS_ARRAY = "my_orders_array";
     public static final String MY_ORDER_DETAILS = "order_details";
+
+    //track order fields
+    public static final String ORDER_TRACKING_ARRAY = "order_tracking_array";
+    public static final String TRACKS = "tracks";
+    public static final String ORDER_STATUS_DETAILS_ID = "order_status_details_id";
+    public static final String TRACK_STATUS_DETAILS_ID = "order_status_id";
+    public static final String DATE = "date";
+    public static final String TIME = "time";
+    public static final String DELIVERY_TIME = "delivery_time";
 
     //time slot fields
     public static final String TIME_SLOT_ID = "time_slot_id";

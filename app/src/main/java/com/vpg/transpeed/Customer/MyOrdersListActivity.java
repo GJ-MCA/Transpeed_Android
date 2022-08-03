@@ -68,8 +68,8 @@ public class MyOrdersListActivity extends AppCompatActivity {
         user_id = preferences.getString(ID_KEY, "");
 
         dialog = new ProgressDialog(MyOrdersListActivity.this);
-        dialog.setTitle("Loading Orders");
-        dialog.setMessage("Please Wait...");
+        dialog.setTitle("Loading Orders...");
+        dialog.setMessage("Please Wait!");
         dialog.setCancelable(false);
 
         //set recycler view layout
@@ -81,7 +81,7 @@ public class MyOrdersListActivity extends AppCompatActivity {
     }
 
     private void getMyOrders() {
-        orderList = new ArrayList<>();
+
         dialog.show();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, WebURL.MY_ORDERS_URL, new Response.Listener<String>() {
             @Override
@@ -118,6 +118,7 @@ public class MyOrdersListActivity extends AppCompatActivity {
             int success = jsonObject.optInt(JSONField.SUCCESS);
             String msg = jsonObject.optString(JSONField.MSG);
             if (success == 1) {
+                orderList = new ArrayList<>();
                 rvMyOrdersList.setVisibility(View.VISIBLE);
                 tvNoOrders.setVisibility(View.GONE);
                 JSONArray jsonArray = jsonObject.optJSONArray(JSONField.MY_ORDERS_ARRAY);
@@ -143,13 +144,14 @@ public class MyOrdersListActivity extends AppCompatActivity {
                 rvMyOrdersList.setAdapter(adapter);
 
             } else {
+                dialog.dismiss();
                 FancyToast.makeText(MyOrdersListActivity.this, msg, FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
             dialog.dismiss();
+            FancyToast.makeText(MyOrdersListActivity.this, "Try again", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
         }
-        dialog.dismiss();
 
     }
 

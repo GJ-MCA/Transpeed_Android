@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +16,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -38,14 +43,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MyOrderDetailsActivity extends AppCompatActivity {
-    TextView tvItemName, tvItemWeight, tvItemType, tvDistance, tvPrice, tvOrderStatus, tvOrderDate,
+    TextView tvOrderId, tvItemName, tvItemWeight, tvItemType, tvDistance, tvPrice, tvOrderDate,
             tvPickupAddressLine1, tvPickupAddressLine2, tvPickupLandmark, tvPickupAreaName,
-            tvPickupAreaPincode, tvPickupCity, tvPickupDate, tvPickupTimeSlot,
+            tvPickupAreaPincode, tvPickupCity, tvPickupDate, tvPickupTimeSlot, tvPickupMobile,
             tvDeliveryAddressLine1, tvDeliveryAddressLine2, tvDeliveryLandmark, tvDeliveryAreaName,
-            tvDeliveryAreaPincode, tvDeliveryCity, tvDeliveryDate, tvDeliveryTimeSlot;
+            tvDeliveryAreaPincode, tvDeliveryCity, tvDeliveryDate, tvDeliveryTimeSlot, tvDeliveryMobile;
     Button btnTrackOrder, btnCancelOrder;
+    ImageView ivCopyOrderId;
+    RelativeLayout toolbar;
 
-    Toolbar toolbar;
+    //Toolbar toolbar;
     ProgressDialog dialog;
 
     @Override
@@ -56,17 +63,21 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String order_id = intent.getStringExtra("order_id");
 
+//        toolbar = findViewById(R.id.toolbar);
+//        AppCompatActivity activity = this;
+//        activity.setSupportActionBar(toolbar);
+//        activity.getSupportActionBar().setTitle("Order No. - " + order_id);
+
         toolbar = findViewById(R.id.toolbar);
-        AppCompatActivity activity = this;
-        activity.setSupportActionBar(toolbar);
-        activity.getSupportActionBar().setTitle("Order No. - " + order_id);
+        tvOrderId = findViewById(R.id.tvOrderId);
+
+        ivCopyOrderId = findViewById(R.id.ivCopyOrderId);
 
         tvItemName = findViewById(R.id.tvItemName);
         tvItemWeight = findViewById(R.id.tvItemWeight);
         tvItemType = findViewById(R.id.tvItemType);
         tvDistance = findViewById(R.id.tvDistance);
         tvPrice = findViewById(R.id.tvPrice);
-        tvOrderStatus = findViewById(R.id.tvOrderStatus);
         tvOrderDate = findViewById(R.id.tvOrderDate);
 
         tvPickupAddressLine1 = findViewById(R.id.tvPickupAddressLine1);
@@ -76,6 +87,7 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
         tvPickupAreaPincode = findViewById(R.id.tvPickupAreaPincode);
         tvPickupCity = findViewById(R.id.tvPickupCity);
         tvPickupDate = findViewById(R.id.tvPickupDate);
+        tvPickupMobile = findViewById(R.id.tvPickupMobile);
         tvPickupTimeSlot = findViewById(R.id.tvPickupTimeSlot);
 
         tvDeliveryAddressLine1 = findViewById(R.id.tvDeliveryAddressLine1);
@@ -85,6 +97,7 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
         tvDeliveryAreaPincode = findViewById(R.id.tvDeliveryAreaPincode);
         tvDeliveryCity = findViewById(R.id.tvDeliveryCity);
         tvDeliveryDate = findViewById(R.id.tvDeliveryDate);
+        tvDeliveryMobile = findViewById(R.id.tvDeliveryMobile);
         tvDeliveryTimeSlot = findViewById(R.id.tvDeliveryTimeSlot);
 
         btnTrackOrder = findViewById(R.id.btnTrackOrder);
@@ -94,6 +107,8 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
         dialog.setTitle("Loading Orders");
         dialog.setMessage("Please Wait...");
         dialog.setCancelable(false);
+
+        tvOrderId.setText("Tracking ID - " + order_id);
 
         getMyOrderDetails(order_id);
 
@@ -134,6 +149,20 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
                     }
                 });
                 builder.show();
+
+            }
+        });
+
+        ivCopyOrderId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //copy to clip board
+                ClipboardManager clipBoard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("OrderId", order_id);
+                clipBoard.setPrimaryClip(clip);
+
+                Toast.makeText(MyOrderDetailsActivity.this, "copied to clipboard", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -187,7 +216,6 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
             e.printStackTrace();
             dialog.dismiss();
         }
-        dialog.dismiss();
     }
 
     private void getMyOrderDetails(String order_id) {
@@ -240,7 +268,6 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
                     String order_date = objOrderDetails.getString(JSONField.ORDER_DATE);
                     String distance = objOrderDetails.getString(JSONField.DISTANCE);
                     String price = objOrderDetails.getString(JSONField.PRICE);
-                    String order_status = objOrderDetails.getString(JSONField.ORDER_STATUS);
 
                     tvItemName.setText(item_name);
                     tvItemWeight.setText(item_weight);
@@ -248,7 +275,6 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
                     tvOrderDate.setText(order_date);
                     tvDistance.setText(distance + " km");
                     tvPrice.setText(price + "₹");
-                    tvOrderStatus.setText(order_status);
 
                     String pickup_address_line1 = objOrderDetails.getString(JSONField.PICKUP_ADDRESS_LINE1);
                     String pickup_address_line2 = objOrderDetails.getString(JSONField.PICKUP_ADDRESS_LINE2);
@@ -257,6 +283,7 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
                     String pickup_area_name = objOrderDetails.getString(JSONField.PICKUP_AREA_NAME);
                     String pickup_city_name = objOrderDetails.getString(JSONField.PICKUP_CITY_NAME);
                     String pickup_date = objOrderDetails.getString(JSONField.PICKUP_DATE);
+                    String pickupMobile = objOrderDetails.getString(JSONField.PICKUP_CONTACT_MOBILE);
                     String pickup_time_slot_start = objOrderDetails.getString(JSONField.PICKUP_TIME_SLOT_START);
                     String pickup_time_slot_end = objOrderDetails.getString(JSONField.PICKUP_TIME_SLOT_END);
 
@@ -267,6 +294,7 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
                     tvPickupAreaName.setText(pickup_area_name);
                     tvPickupCity.setText(pickup_city_name);
                     tvPickupDate.setText(pickup_date);
+                    tvPickupMobile.setText(pickupMobile);
                     if (Integer.parseInt(pickup_time_slot_start) > 12)
                         pickup_time_slot_start += "PM";
                     else
@@ -284,6 +312,7 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
                     String delivery_area_name = objOrderDetails.getString(JSONField.DELIVERY_AREA_NAME);
                     String delivery_city_name = objOrderDetails.getString(JSONField.DELIVERY_CITY_NAME);
                     String delivery_date = objOrderDetails.getString(JSONField.DELIVERY_DATE);
+                    String deliveryMobile = objOrderDetails.getString(JSONField.DELIVERY_CONTACT_MOBILE);
                     String delivery_time_slot_start = objOrderDetails.getString(JSONField.DELIVERY_TIME_SLOT_START);
                     String delivery_time_slot_end = objOrderDetails.getString(JSONField.DELIVERY_TIME_SLOT_END);
 
@@ -294,6 +323,7 @@ public class MyOrderDetailsActivity extends AppCompatActivity {
                     tvDeliveryAreaName.setText(delivery_area_name);
                     tvDeliveryCity.setText(delivery_city_name);
                     tvDeliveryDate.setText(delivery_date);
+                    tvDeliveryMobile.setText(deliveryMobile);
                     if (Integer.parseInt(delivery_time_slot_start) > 12)
                         delivery_time_slot_start += "PM";
                     else

@@ -42,8 +42,8 @@
             android:background="@drawable/background_new_order_details"
             android:padding="30dp"
             app:cardCornerRadius="5dp"
-            app:cardElevation="5dp"
-            app:cardBackgroundColor="#65E5E7E8"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="#7EE5E7E8"
             app:cardMaxElevation="10dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true">

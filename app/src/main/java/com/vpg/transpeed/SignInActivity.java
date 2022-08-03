@@ -3,6 +3,7 @@ package com.vpg.transpeed;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -38,7 +39,9 @@ import java.util.regex.Pattern;
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
     EditText etMobile, etPassword;
     Button btnSignIn;
-    TextView tvGotoSignUp;
+    TextView tvGotoSignUp, tvForgotPassword;
+
+    ProgressDialog dialog;
 
     public static final String PROFILE = "profile";
     public static final String ID_KEY = "user_id";
@@ -57,9 +60,16 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         etPassword = findViewById(R.id.etPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
         tvGotoSignUp = findViewById(R.id.tvGotoSignUp);
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
+
+        dialog = new ProgressDialog(this);
+        dialog.setTitle("Logging Account");
+        dialog.setMessage("Please Wait!");
+        dialog.setCancelable(false);
 
         btnSignIn.setOnClickListener(this);
         tvGotoSignUp.setOnClickListener(this);
+        tvForgotPassword.setOnClickListener(this);
 
     }
 
@@ -68,23 +78,28 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
 
             case R.id.btnSignIn:
-                if (true/*checkMobile() && checkPassword()*/) {
+                if (checkMobile() && checkPassword()) {
                     sendSignInRequest();
                 } else {
-                    FancyToast.makeText(SignInActivity.this, "Enter valid details", FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show();
+//                    FancyToast.makeText(SignInActivity.this, "Enter valid details", FancyToast.LENGTH_SHORT, FancyToast.INFO, false).show();
                 }
                 break;
 
-            case R.id.tvGotoSignUp:
-                Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
+            case R.id.tvForgotPassword:
+                Intent intent = new Intent(SignInActivity.this, ForgotPasswordEmailActivity.class);
                 startActivity(intent);
+                break;
+
+            case R.id.tvGotoSignUp:
+                Intent intent1 = new Intent(SignInActivity.this, SignUpActivity.class);
+                startActivity(intent1);
                 break;
         }
 
     }
 
     private void sendSignInRequest() {
-
+        dialog.show();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, WebURL.SIGN_IN_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -94,6 +109,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                dialog.dismiss();
+                FancyToast.makeText(SignInActivity.this, "Try again", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
             }
         }) {
 
@@ -110,7 +127,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         };
         RequestQueue requestQueue = Volley.newRequestQueue(SignInActivity.this);
         requestQueue.add(stringRequest);
-        
+
     }
 
     private void parseJSONSignInRequest(String response) {
@@ -123,7 +140,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             String msg = jsonObject.optString(JSONField.MSG);
 
             if (flag == 1) {
-
+                dialog.dismiss();
                 String userID = jsonObject.optString(JSONField.USER_ID);
                 String userName = jsonObject.optString(JSONField.USER_NAME);
                 String userEmail = jsonObject.optString(JSONField.USER_EMAIL);
@@ -143,7 +160,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 editor.putString(USER_TYPE, userType);
                 editor.commit();
 
-                Log.d("ID", preferences.getString(ID_KEY,""));
+                Log.d("ID", preferences.getString(ID_KEY, ""));
+                dialog.dismiss();
                 FancyToast.makeText(SignInActivity.this, "Welcome! " + userName, FancyToast.LENGTH_LONG, FancyToast.SUCCESS, false).show();
 
                 //redirecting app users via roles
@@ -162,11 +180,14 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 }
 
             } else {
+                dialog.dismiss();
                 FancyToast.makeText(SignInActivity.this, msg, FancyToast.LENGTH_LONG, FancyToast.ERROR, false).show();
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
+            dialog.dismiss();
+            FancyToast.makeText(SignInActivity.this, "Try again", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
         }
 
     }
@@ -178,7 +199,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         if (etMobile.getText().toString().trim().length() <= 0) {
             etMobile.setError("Enter Mobile Number");
-        } else if (Patterns.PHONE.matcher(etMobile.getText().toString().trim()).matches()) {
+        } else if (Patterns.PHONE.matcher(etMobile.getText().toString().trim()).matches() && etMobile.getText().toString().trim().length() == 10) {
             isValidMobile = true;
         } else {
             etMobile.setError("Enter Correct Mobile Number");

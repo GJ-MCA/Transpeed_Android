@@ -4,15 +4,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -24,8 +21,6 @@ import com.android.volley.toolbox.Volley;
 import com.shashank.sony.fancytoastlib.FancyToast;
 import com.vpg.transpeed.ApiManager.JSONField;
 import com.vpg.transpeed.ApiManager.WebURL;
-import com.vpg.transpeed.Customer.CustomerHomeActivity;
-import com.vpg.transpeed.Customer.Fragments.CustomerProfileFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,65 +29,63 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class ChangePasswordActivity extends AppCompatActivity {
-    EditText etOldPassword, etNewPassword, etNewConPassword;
-    Button btnChangePassword;
-
-    public static final String PROFILE = "profile";
-    public static final String ID_KEY = "user_id";
+public class ResetPasswordActivity extends AppCompatActivity {
+    EditText etNewPassword, etNewConPassword;
+    Button btnResetPassword;
 
     ProgressDialog dialog;
-    String user_id;
+
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_password);
+        setContentView(R.layout.activity_reset_password);
 
-        etOldPassword = findViewById(R.id.etOldPassword);
         etNewPassword = findViewById(R.id.etNewPassword);
         etNewConPassword = findViewById(R.id.etNewConPassword);
 
-        btnChangePassword = findViewById(R.id.btnChangePassword);
-
-        SharedPreferences preferences = getSharedPreferences(PROFILE, MODE_PRIVATE);
-        user_id = preferences.getString(ID_KEY, "");
+        btnResetPassword = findViewById(R.id.btnResetPassword);
 
         dialog = new ProgressDialog(this);
-        dialog.setTitle("Updating Password...");
+        dialog.setTitle("Resetting password...");
         dialog.setMessage("Please Wait!");
         dialog.setCancelable(false);
 
-        btnChangePassword.setOnClickListener(new View.OnClickListener() {
+        Intent intent = getIntent();
+        email = intent.getStringExtra("EMAIL");
+
+        btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //change password code
-                if (checkOldPassword() && checkNewPassword() && checkNewConPassword()) {
 
-                    btnChangePassword.setClickable(false);
-                    sendUpdatePasswordRequest();
+                if (!email.equals("") && checkNewPassword() && checkNewConPassword()) {
+
+                    btnResetPassword.setClickable(false);
+                    sendResetPasswordRequest();
 
                 }
+
             }
         });
 
     }
 
-    private void sendUpdatePasswordRequest() {
+    private void sendResetPasswordRequest() {
 
         dialog.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, WebURL.PASSWORD_CHANGE_URL, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, WebURL.RESET_PASSWORD_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                parseJSONChangePassword(response);
+                parseJSONResetPassword(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
                 dialog.dismiss();
-                btnChangePassword.setClickable(true);
-                FancyToast.makeText(ChangePasswordActivity.this, "Try again", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
+                btnResetPassword.setClickable(true);
+                FancyToast.makeText(ResetPasswordActivity.this, "Try again", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
             }
         }) {
 
@@ -101,60 +94,42 @@ public class ChangePasswordActivity extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 HashMap<String, String> params = new HashMap<>();
-                params.put(JSONField.USER_ID, user_id);
-                params.put(JSONField.USER_PASSWORD, etOldPassword.getText().toString().trim());
-                params.put(JSONField.NEW_PASSWORD, etNewPassword.getText().toString().trim());
+                params.put(JSONField.USER_EMAIL, email);
+                params.put(JSONField.NEW_PASSWORD, etNewPassword.getText().toString());
 
                 return params;
             }
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(ChangePasswordActivity.this);
+        RequestQueue requestQueue = Volley.newRequestQueue(ResetPasswordActivity.this);
         requestQueue.add(stringRequest);
 
     }
 
-    private void parseJSONChangePassword(String response) {
+    private void parseJSONResetPassword(String response) {
 
-        Log.d("CHANGE PASSWORD RESPONSE", response);
+        Log.d("RESET PASSWORD RESPONSE", response);
         try {
             JSONObject jsonObject = new JSONObject(response);
             int success = jsonObject.optInt(JSONField.SUCCESS);
             String msg = jsonObject.optString(JSONField.MSG);
             if (success == 1) {
-                FancyToast.makeText(ChangePasswordActivity.this, msg, FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+                FancyToast.makeText(ResetPasswordActivity.this, msg, FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
                 dialog.dismiss();
                 //redirecting to customer home screen
-                Intent intent = new Intent(ChangePasswordActivity.this, CustomerHomeActivity.class);
+                Intent intent = new Intent(ResetPasswordActivity.this, SignInActivity.class);
                 startActivity(intent);
             } else {
-                btnChangePassword.setClickable(true);
+                btnResetPassword.setClickable(true);
                 dialog.dismiss();
-                FancyToast.makeText(ChangePasswordActivity.this, msg, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
+                FancyToast.makeText(ResetPasswordActivity.this, msg, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
-            btnChangePassword.setClickable(true);
+            btnResetPassword.setClickable(true);
             dialog.dismiss();
         }
 
-    }
-
-    //old password validation
-    private boolean checkOldPassword() {
-
-        boolean isValidPassword = false;
-        String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=]).{8,}$";
-
-        if (etOldPassword.getText().toString().trim().length() <= 0) {
-            etOldPassword.setError("Enter Password");
-        } else if (Pattern.compile(PASSWORD_PATTERN).matcher(etOldPassword.getText().toString().trim()).matches()) {
-            isValidPassword = true;
-        } else {
-            etOldPassword.setError("Password Should contain 1 capital letter,1 small letter,1 special character,1 digit and minimum length 8");
-        }
-
-        return isValidPassword;
     }
 
     //new password validation
@@ -192,11 +167,4 @@ public class ChangePasswordActivity extends AppCompatActivity {
         return isValidConPassword;
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(ChangePasswordActivity.this, CustomerHomeActivity.class);
-        intent.putExtra("PROFILE", 3);
-        startActivity(intent);
-    }
 }
