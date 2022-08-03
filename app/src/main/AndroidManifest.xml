@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.vpg.transpeed" >
+    package="com.vpg.transpeed">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -15,7 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Transpeed"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31" >
+        tools:targetApi="31">
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotPasswordEmailActivity"
+            android:exported="false" />
         <activity
             android:name=".Customer.MyOrderDetailsActivity"
             android:exported="false" />
@@ -42,7 +48,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

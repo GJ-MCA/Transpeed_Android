@@ -3,7 +3,7 @@ package com.vpg.transpeed.ApiManager;
 public class WebURL {
 
     //local url
-    private static final String IP_ADDRESS = "192.168.79.65";
+    private static final String IP_ADDRESS = "192.168.184.66";
     public static final String MAIN_URL = "http://" + IP_ADDRESS + "/Transpeed/APIs/";
 
     //registration api insert
@@ -50,5 +50,24 @@ public class WebURL {
 
     //create my order details api select
     public static final String CANCEL_MY_ORDER_URL = MAIN_URL + "cancelOrder.php";
+
+    //send otp to user email api
+    public static final String SEND_MAIL_URL = MAIN_URL + "sendMail.php";
+
+    //send reset password otp to user email api
+    public static final String SEND_RESET_MAIL_URL = MAIN_URL + "forgotPasswordMail.php";
+
+    //send reset password otp to user email api
+    public static final String RESET_PASSWORD_URL = MAIN_URL + "resetPassword.php";
+
+    //send otp to user mobile api
+    public static final String SEND_MOBILE_OTP_URL = MAIN_URL + "sendMobileOTP.php";
+
+    //check order id exist or not select api
+    public static final String CHECK_ORDER_ID_URL = MAIN_URL + "checkOrderId.php";
+
+    //order tracking api
+    public static final String ORDER_TRACK_URL = MAIN_URL + "orderTracking.php";
+
 
 }

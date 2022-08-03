@@ -1,23 +1,43 @@
 package com.vpg.transpeed.Customer.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.shashank.sony.fancytoastlib.FancyToast;
+import com.vpg.transpeed.ApiManager.JSONField;
+import com.vpg.transpeed.ApiManager.WebURL;
+import com.vpg.transpeed.ChangePasswordActivity;
+import com.vpg.transpeed.Customer.CustomerHomeActivity;
 import com.vpg.transpeed.Customer.MyOrderDetailsActivity;
 import com.vpg.transpeed.Customer.MyOrdersListActivity;
 import com.vpg.transpeed.Customer.TrackMyOrderActivity;
 import com.vpg.transpeed.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,6 +90,8 @@ public class CustomerHomeFragment extends Fragment {
     EditText etTrackingId;
     Button btnTrack, btnMyOrders;
 
+    ProgressDialog dialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -84,15 +106,23 @@ public class CustomerHomeFragment extends Fragment {
         btnTrack = view.findViewById(R.id.btnTrack);
         btnMyOrders = view.findViewById(R.id.btnMyOrders);
 
+        dialog = new ProgressDialog(getContext());
+        dialog.setTitle("Loading...");
+        dialog.setMessage("Please Wait!");
+        dialog.setCancelable(false);
+
         btnTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //track order code
                 if (etTrackingId.getText().toString().equals("")) {
-                    FancyToast.makeText(getContext(), "Enter Tracking Id First", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
+                    etTrackingId.setError("Enter Tracking Id");
+                    //FancyToast.makeText(getContext(), "Enter Tracking Id", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
+                } else if (etTrackingId.getText().toString().trim().length() == 10) {
+                    checkOrderIdExist();
                 } else {
-                    Intent intent = new Intent(getContext(), TrackMyOrderActivity.class);
-                    startActivity(intent);
+                    etTrackingId.setError("Enter correct Tracking id");
+                    //FancyToast.makeText(getContext(), "Enter correct Tracking Id", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
                 }
             }
         });
@@ -108,4 +138,66 @@ public class CustomerHomeFragment extends Fragment {
 
         return view;
     }
+
+    private void checkOrderIdExist() {
+
+        dialog.show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, WebURL.CHECK_ORDER_ID_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseJSONOrderIdExist(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                dialog.dismiss();
+                btnTrack.setClickable(true);
+                FancyToast.makeText(getContext(), "Try again", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
+            }
+        }) {
+
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                HashMap<String, String> params = new HashMap<>();
+                params.put(JSONField.TRACKING_ID, etTrackingId.getText().toString());
+                return params;
+
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(stringRequest);
+
+    }
+
+    private void parseJSONOrderIdExist(String response) {
+
+        Log.d("ORDER ID EXIST RESPONSE", response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            int success = jsonObject.optInt(JSONField.SUCCESS);
+            String msg = jsonObject.optString(JSONField.MSG);
+            if (success == 1) {
+                //FancyToast.makeText(getContext(), msg, FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+                dialog.dismiss();
+                Intent intent = new Intent(getContext(), TrackMyOrderActivity.class);
+                intent.putExtra("order_id", etTrackingId.getText().toString());
+                startActivity(intent);
+            } else {
+                btnTrack.setClickable(true);
+                dialog.dismiss();
+                FancyToast.makeText(getContext(), msg, FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            btnTrack.setClickable(true);
+            dialog.dismiss();
+            FancyToast.makeText(getContext(), "Try again", FancyToast.LENGTH_SHORT, FancyToast.ERROR, false).show();
+        }
+
+    }
+
 }
